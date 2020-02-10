@@ -1,4 +1,4 @@
-package ond.test.test;
+package ond.test.test.memory;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;

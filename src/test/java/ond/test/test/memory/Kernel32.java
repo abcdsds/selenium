@@ -1,4 +1,4 @@
-package ond.test.test;
+package ond.test.test.memory;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.win32.StdCallLibrary;
