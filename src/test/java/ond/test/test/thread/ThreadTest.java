@@ -5,36 +5,31 @@ import java.util.List;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.WinDef.HWND;
 
 import ond.test.test.memory.User32Util;
 
 public class ThreadTest extends NotifyingThread {
 
-	
-	private int[] offsets = new int[0x01];
-	private Pointer ThreadProcess;
-	private int ThreadItemAddress;
-	private int ThreadStart;
-	private int ThreadEnd;
-	private List list;
-
-	
-	public ThreadTest (Pointer process, int itemAddress , int start , int end, List list) {
-		this.ThreadProcess = process;
-		this.ThreadItemAddress = itemAddress;
-		this.ThreadStart = start;
-		this.ThreadEnd = end;
-		this.list = list;
+		
+	public ThreadTest (HWND hwnd, Pointer process, int itemAddress , int start , int end, List list) {
+		super.hwnd = hwnd;
+		super.ThreadProcess = process;
+		super.ThreadItemAddress = itemAddress;
+		super.ThreadStart = start;
+		super.ThreadEnd = end;
+		super.list = list;
 	}
 		
 	
 	@Override
-	protected void doRun() {
+	public void doRun() {
 		//int[] offsets = new int[0x01];
 		
 		for (int i = ThreadStart; i <= ThreadEnd; i++) {
 
 			Memory mem = (User32Util.readMemory(ThreadProcess, ThreadItemAddress + offsets[0], 4));
+			
 			if (mem.getInt(0) == 5433508) {
 
 				
@@ -50,16 +45,15 @@ public class ThreadTest extends NotifyingThread {
 				System.out.print(ThreadEnd+" X = " + memLocationX.getInt(0));
 				System.out.print(" Y = " + memLocationY.getInt(0));
 
-				locationXY.put("X", memLocationX.getInt(0));
-				locationXY.put("Y", memLocationY.getInt(0));
-
 				System.out.println();
 
 				if (memItemNum1.getInt(0) == 6 && memItemNum2.getInt(0) == 5) {
 					System.out.println("µµÅä¸® ");
+					locationXY.put("X", memLocationX.getInt(0));
+					locationXY.put("Y", memLocationY.getInt(0));
+					list.add(locationXY);
 				}
 
-				list.add(locationXY);
 
 			}
 

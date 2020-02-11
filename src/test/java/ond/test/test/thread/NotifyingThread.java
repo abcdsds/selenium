@@ -9,12 +9,20 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.WinDef.HWND;
 
 import ond.test.test.memory.User32Util;
 
 public abstract class NotifyingThread extends Thread {
 
-	int count;
+
+	protected int[] offsets = new int[0x01];
+	protected HWND hwnd;
+	protected Pointer ThreadProcess;
+	protected int ThreadItemAddress;
+	protected int ThreadStart;
+	protected int ThreadEnd;
+	protected List list;
 	
 	
 	private final Set<ThreadCompleteListener> listeners = new CopyOnWriteArraySet<ThreadCompleteListener>();
@@ -27,9 +35,9 @@ public abstract class NotifyingThread extends Thread {
 		listeners.remove(listener);
 	}
 
-	private final void notifyListeners() {
+	private final void notifyListeners() throws InterruptedException {
 		for (ThreadCompleteListener listener : listeners) {
-			listener.notifyOfThreadComplete(this,count);
+			listener.notifyOfThreadComplete(this,hwnd,ThreadProcess);
 		}
 	}
 	
@@ -37,7 +45,12 @@ public abstract class NotifyingThread extends Thread {
 		try {
 			doRun();
 		} finally {
-			notifyListeners();
+			try {
+				notifyListeners();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 
 	}
